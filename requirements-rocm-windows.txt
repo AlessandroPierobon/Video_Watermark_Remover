@@ -1,0 +1,30 @@
+# Dipendenze del backend ProPainter su Windows 11 con GPU AMD RDNA4
+# (Radeon RX 9070 / 9070 XT, gfx1201).
+#
+# Prerequisiti:
+#   1. driver Adrenalin 26.2.2 o piu' recente
+#   2. Python 3.12 esatto: per le altre versioni non esistono ruote ROCm
+#
+# Da ROCm 7.2 in poi l'HIP SDK a parte non serve: il runtime arriva via pip.
+# Procedura completa (SDK + torch + questo file + ProPainter) nel README.
+#
+# Attenzione:
+#   - usare .../rocm/windows/..., non .../rocm/manylinux/... (quello e' Linux)
+#   - usare le ruote stabili, non le nightly (mancano i kernel per gfx1201)
+#   - con GPU integrata: set HIP_VISIBLE_DEVICES=0
+
+# --- pacchetti del programma ---
+numpy>=1.24
+opencv-python-headless>=4.8,<5
+imageio-ffmpeg>=0.4.9
+tqdm>=4.66
+
+# --- dipendenze di ProPainter (PyTorch escluso, vedi README) ---
+scipy
+einops
+timm
+imageio
+imageio-ffmpeg
+av
+matplotlib
+scikit-image

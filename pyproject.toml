@@ -1,0 +1,25 @@
+[project]
+name = "video-watermark-remover"
+version = "1.0.0"
+description = "Rimozione didattica di filigrane che si spostano tra gli angoli di un video"
+readme = "README.md"
+license = { text = "Apache-2.0" }
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=1.24",
+    "opencv-python-headless>=4.8,<5",
+    "imageio-ffmpeg>=0.4.9",
+    "tqdm>=4.66",
+]
+
+[project.urls]
+Homepage = "https://github.com/AlessandroPierobon/Video_Watermark_Remover"
+Repository = "https://github.com/AlessandroPierobon/Video_Watermark_Remover"
+Issues = "https://github.com/AlessandroPierobon/Video_Watermark_Remover/issues"
+
+[project.optional-dependencies]
+lama = ["torch>=2.0"]
+propainter = ["torch>=2.0", "torchvision", "av", "einops", "scipy", "scikit-image", "timm"]
+
+[tool.setuptools]
+packages = ["wmremove", "wmremove.backends"]
