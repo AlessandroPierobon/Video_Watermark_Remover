@@ -1,6 +1,6 @@
 [project]
 name = "video-watermark-remover"
-version = "1.0.0"
+version = "1.0.1"
 description = "Rimozione didattica di filigrane che si spostano tra gli angoli di un video"
 readme = "README.md"
 license = { text = "Apache-2.0" }

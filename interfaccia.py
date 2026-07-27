@@ -283,9 +283,9 @@ class Applicazione(ttk.Frame):
         if motore == "lama" and not torch_installato():
             messagebox.showerror(
                 APP_NAME,
-                "Il motore LaMa richiede PyTorch.\n\n"
-                "Installalo con:\n"
-                "  pip install torch\n\n"
+                "Il motore LaMa richiede PyTorch (non usa iopaint).\n\n"
+                "Dal menu Start: \"Aggiungi il supporto LaMa\",\n"
+                "oppure, se hai gia' il supporto GPU AMD, riapri il programma.\n\n"
                 "I pesi della rete (~200 MB) si scaricano al primo utilizzo.",
             )
             return None

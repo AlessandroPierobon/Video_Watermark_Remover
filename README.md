@@ -120,7 +120,9 @@ trascinare sopra un video), una voce nel menu Start con la riga di comando gia'
 configurata, e la disinstallazione registrata nelle impostazioni di Windows.
 
 Il supporto per la scheda video si aggiunge dopo, dal menu Start, con
-*Aggiungi il supporto GPU AMD*: sono altri 2,5 GB di download.
+*Aggiungi il supporto GPU AMD*: sono altri 2,5 GB di download. Per il motore
+LaMa (senza `iopaint`) basta *Aggiungi il supporto LaMa*, che installa
+PyTorch CPU; se hai gia' il supporto GPU non serve.
 
 #### Ricompilare l'installer
 
@@ -378,12 +380,15 @@ wmremove/
 scripts/
   setup_propainter.py       codice di ProPainter e download dei pesi
   installa_gpu.py           ROCm, PyTorch e ProPainter in un colpo solo
+  installa_lama.py          PyTorch CPU per LaMa (senza iopaint)
 installer/
   compila.sh                costruisce l'installer per Windows
+  compila.ps1               stessa cosa, nativo PowerShell
   installer.nsi             pagine, collegamenti, disinstallazione
   crea_icona.py             disegna icona.ico
   riga-di-comando.cmd       prompt con il Python del programma
   supporto-gpu.cmd          lancia installa_gpu.py
+  supporto-lama.cmd         lancia installa_lama.py
 ```
 
 ## Licenza

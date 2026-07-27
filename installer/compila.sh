@@ -77,6 +77,17 @@ cp -R "$PROGETTO/wmremove" "$PROGETTO/scripts" "$BUILD/app/"
 find "$BUILD/app" -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true
 find "$BUILD/app" -name "._*" -delete 2>/dev/null || true
 
+# Controllo anti-regressione: il backend LaMa non deve richiamare iopaint.
+if grep -E '(^[[:space:]]*"iopaint"|pip install iopaint|which\("iopaint"\))' \
+    "$BUILD/app/wmremove/backends/lama.py" >/dev/null; then
+  echo "errore: lama.py nel pacchetto richiama ancora iopaint" >&2
+  exit 1
+fi
+if ! grep -q 'torch.jit.load' "$BUILD/app/wmremove/backends/lama.py"; then
+  echo "errore: lama.py senza caricamento TorchScript" >&2
+  exit 1
+fi
+
 # ---------------------------------------------------------- 3. compilazione
 echo
 echo "== Compilo l'installer =="

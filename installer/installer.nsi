@@ -14,7 +14,7 @@ Unicode true
 !include "FileFunc.nsh"
 
 !define NOME        "Video Watermark Remover"
-!define VERSIONE    "1.0.0"
+!define VERSIONE    "1.0.1"
 !define EDITORE     "Progetto didattico"
 !define CHIAVE      "VideoWatermarkRemover"
 
@@ -28,6 +28,13 @@ Unicode true
   !define USCITA "../VideoWatermarkRemover-Setup.exe"
 !endif
 
+; Separatore percorsi: makensis su Windows vuole \, su POSIX vuole /.
+!ifdef NSIS_WIN32_MAKENSIS
+  !define PSEP "\"
+!else
+  !define PSEP "/"
+!endif
+
 Name "${NOME}"
 OutFile "${USCITA}"
 InstallDir "$LOCALAPPDATA\Programs\${CHIAVE}"
@@ -38,7 +45,7 @@ SetCompressorDictSize 64
 ShowInstDetails show
 ShowUninstDetails show
 
-VIProductVersion "1.0.0.0"
+VIProductVersion "1.0.1.0"
 VIAddVersionKey /LANG=1040 "ProductName"     "${NOME}"
 VIAddVersionKey /LANG=1040 "FileDescription" "Installer di ${NOME}"
 VIAddVersionKey /LANG=1040 "FileVersion"     "${VERSIONE}"
@@ -51,7 +58,7 @@ VIAddVersionKey /LANG=1040 "LegalCopyright"  "Uso didattico"
 !define MUI_ABORTWARNING
 
 !define MUI_WELCOMEPAGE_TITLE "Installazione di ${NOME}"
-!define MUI_WELCOMEPAGE_TEXT  "Questo programma toglie dai video le filigrane semitrasparenti, comprese quelle che si spostano da un angolo all'altro.$\r$\n$\r$\nVerranno installati il programma, la sua interfaccia e un ambiente Python 3.12 completo e indipendente: non serve avere Python sul computer, e nulla di gia' installato viene toccato.$\r$\n$\r$\nServono circa 800 MB di spazio su disco.$\r$\n$\r$\nIl supporto per la scheda video AMD si aggiunge dopo, dal menu Start, quando serve."
+!define MUI_WELCOMEPAGE_TEXT  "Questo programma toglie dai video le filigrane semitrasparenti, comprese quelle che si spostano da un angolo all'altro.$\r$\n$\r$\nVerranno installati il programma, la sua interfaccia e un ambiente Python 3.12 completo e indipendente: non serve avere Python sul computer, e nulla di gia' installato viene toccato.$\r$\n$\r$\nServono circa 800 MB di spazio su disco.$\r$\n$\r$\nIl motore LaMa (senza iopaint) e il supporto GPU AMD si aggiungono dopo, dal menu Start, quando servono."
 
 !define MUI_FINISHPAGE_RUN            "$INSTDIR\python\pythonw.exe"
 ; Le virgolette vanno protette: MUI monta la riga dentro un'altra stringa.
@@ -80,12 +87,13 @@ Section "Programma e ambiente Python" SEZIONE_BASE
   File "icona.ico"
   File "riga-di-comando.cmd"
   File "supporto-gpu.cmd"
+  File "supporto-lama.cmd"
 
   DetailPrint "Copia dell'ambiente Python..."
-  File /r "${BUILD}/python"
+  File /r "${BUILD}${PSEP}python"
 
   DetailPrint "Copia del programma..."
-  File /r "${BUILD}/app"
+  File /r "${BUILD}${PSEP}app"
 
   ; Menu Start
   CreateDirectory "$SMPROGRAMS\${NOME}"
@@ -94,6 +102,8 @@ Section "Programma e ambiente Python" SEZIONE_BASE
     "$INSTDIR\icona.ico" 0 SW_SHOWNORMAL "" "Toglie la filigrana dai video"
   CreateShortcut "$SMPROGRAMS\${NOME}\Riga di comando.lnk" \
     "$INSTDIR\riga-di-comando.cmd" "" "$INSTDIR\icona.ico" 0
+  CreateShortcut "$SMPROGRAMS\${NOME}\Aggiungi il supporto LaMa.lnk" \
+    "$INSTDIR\supporto-lama.cmd" "" "$INSTDIR\icona.ico" 0
   CreateShortcut "$SMPROGRAMS\${NOME}\Aggiungi il supporto GPU AMD.lnk" \
     "$INSTDIR\supporto-gpu.cmd" "" "$INSTDIR\icona.ico" 0
   CreateShortcut "$SMPROGRAMS\${NOME}\Disinstalla.lnk" "$INSTDIR\uninstall.exe"
@@ -145,6 +155,7 @@ Section "Uninstall"
   Delete "$INSTDIR\icona.ico"
   Delete "$INSTDIR\riga-di-comando.cmd"
   Delete "$INSTDIR\supporto-gpu.cmd"
+  Delete "$INSTDIR\supporto-lama.cmd"
   Delete "$INSTDIR\uninstall.exe"
   RMDir "$INSTDIR"
 
