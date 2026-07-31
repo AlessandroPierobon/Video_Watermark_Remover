@@ -11,7 +11,6 @@ tre checkpoint necessari all'inferenza, circa 500 MB in tutto.
 from __future__ import annotations
 
 import argparse
-import re
 import subprocess
 import sys
 import urllib.request
@@ -123,16 +122,17 @@ def patch_for_rocm(target: Path) -> None:
         print("  patch ROCm: gia' applicata")
         return
 
-    patched, n = re.subn(
-        r"IS_HIGH_VERSION\s*=\s*\[int\(m\) for m in list\(re\.findall\([\s\S]*?\)\[0\]\[:3\]\)\]\s*>=\s*\[1,\s*12,\s*0\]",
-        _ROCM_VERSION_BLOCK,
-        text,
-        count=1,
-    )
-    if n == 0:
+    inizio = text.find("IS_HIGH_VERSION =")
+    if inizio < 0:
         print("  patch ROCm: blocco versione non riconosciuto, controllo a mano")
         return
-    text = patched
+    marcatore = ">= [1, 12, 0]"
+    fine = text.find(marcatore, inizio)
+    if fine < 0:
+        print("  patch ROCm: fine del blocco versione non trovata, controllo a mano")
+        return
+    fine += len(marcatore)
+    text = text[:inizio] + _ROCM_VERSION_BLOCK + text[fine:]
 
     text = text.replace(
         "return True if torch.cuda.is_available() and torch.backends.cudnn.is_available() else False",
